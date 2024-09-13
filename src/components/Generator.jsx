@@ -16,6 +16,7 @@ function Header(props) {
     </div>
   );
 }
+
 export default function Generator() {
   const [showModal, setShowModal] = useState(false);
   const [poison, setPoison] = useState("individual");
@@ -24,6 +25,29 @@ export default function Generator() {
 
   function toggleModal() {
     setShowModal(!showModal);
+  }
+
+  function updateMuscles(muscleGroup) {
+    if (muscles.includes(muscleGroup)) {
+      setMuscles(muscles.filter((m) => m !== muscleGroup));
+      return;
+    }
+
+    if (muscles.length > 2) {
+      return;
+    }
+
+    if (poison !== "individual") {
+      setMuscles([muscleGroup]);
+      setShowModal(false);
+      return;
+    }
+
+    setMuscles([...muscles, muscleGroup]);
+
+    if (muscles.length === 2) {
+      setShowModal(false);
+    }
   }
 
   return (
@@ -41,6 +65,7 @@ export default function Generator() {
           return (
             <button
               onClick={() => {
+                setMuscles([]);
                 setPoison(type);
               }}
               className={
@@ -60,17 +85,43 @@ export default function Generator() {
       <Header
         index={"02"}
         title={"Lock On Targets"}
-        description={"Select the multiple targets"}
+        description={"Select the targets muscle to lock on"}
       />
       <div className="bg-slate-950 border border-solid border-blue-400 rounded-lg flex flex-col">
         <button
           onClick={toggleModal}
           className="relative p-3 flex items-center justify-center"
         >
-          <p>Select muscle groups</p>
+          <p className="capitalize">
+            {muscles.length === 0 ? "Select muscle groups" : muscles.join(", ")}
+          </p>
           <i className="fa-solid absolute right-3 top-1/2 -translate-y-1/2 fa-caret-down"></i>
         </button>
-        {showModal && <div>Modal</div>}
+        {showModal && (
+          <div className="flex flex-col px-3 pb-3">
+            {(poison === "individual"
+              ? WORKOUTS[poison]
+              : Object.keys(WORKOUTS[poison])
+            ).map((muscleGroup, muscleGroupIndex) => {
+              return (
+                <button
+                  onClick={() => {
+                    updateMuscles(muscleGroup);
+                  }}
+                  key={muscleGroupIndex}
+                  className={
+                    "hover:text-blue-400 duration-200" +
+                    (muscles.includes(muscleGroup) ? " text-blue-400" : " ")
+                  }
+                >
+                  <p className="capitalize">
+                    {muscleGroup.replaceAll("_", " ")}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <Header
