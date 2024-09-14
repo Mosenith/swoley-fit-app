@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SectionWrapper from "./SectionWrapper";
 import { SCHEMES, WORKOUTS } from "../utils/swoldier";
+import Button from "./Button";
 
 function Header(props) {
   const { index, title, description } = props;
@@ -17,11 +18,17 @@ function Header(props) {
   );
 }
 
-export default function Generator() {
+export default function Generator(props) {
+  const {
+    poison,
+    setPoison,
+    muscles,
+    setMuscles,
+    goal,
+    setGoal,
+    updateWorkout,
+  } = props;
   const [showModal, setShowModal] = useState(false);
-  const [poison, setPoison] = useState("individual");
-  const [muscles, setMuscles] = useState([]);
-  const [goal, setGoal] = useState("strength_power");
 
   function toggleModal() {
     setShowModal(!showModal);
@@ -69,7 +76,7 @@ export default function Generator() {
                 setPoison(type);
               }}
               className={
-                "bg-slate-950 border border-blue-350 duration-200 hover:border-blue-600 py-3 rounded-lg " +
+                "bg-slate-950 border border-blue-350 duration-200 px-4 hover:border-blue-600 py-3 rounded-lg " +
                 (type === poison
                   ? "border-blue-600 bg-blue-600 text-white"
                   : "border-blue-200")
@@ -131,7 +138,7 @@ export default function Generator() {
           "Please choose one of the following options that best aligns with your current fitness goals"
         }
       />
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {Object.keys(SCHEMES).map((scheme, schemeIndex) => {
           return (
             <button
@@ -139,7 +146,7 @@ export default function Generator() {
                 setGoal(scheme);
               }}
               className={
-                "bg-slate-950 border border-blue-350 duration-200 hover:border-blue-600 py-3 rounded-lg " +
+                "bg-slate-950 border border-blue-350 duration-200 px-4 hover:border-blue-600 py-3 rounded-lg " +
                 (scheme === goal
                   ? "border-blue-600 bg-blue-600 text-white"
                   : "border-blue-200")
@@ -151,6 +158,7 @@ export default function Generator() {
           );
         })}
       </div>
+      <Button func={updateWorkout} text={"Formulate"}></Button>
     </SectionWrapper>
   );
 }
